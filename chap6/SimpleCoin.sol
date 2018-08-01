@@ -1,4 +1,5 @@
-pragma solidity ^0.4.16;
+pragma solidity ^0.4.24;
+
 import './Ownable.sol';
 
 contract SimpleCoin is Ownable {
