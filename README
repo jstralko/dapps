@@ -1,3 +1,10 @@
 SimpleCrowdsale.sol is deployed @ 0x921f25ae2441eb5b1bc2554f604e9539aad923fa
 
 https://ropsten.etherscan.io/address/0x921f25ae2441eb5b1bc2554f604e9539aad923fa
+
+To interface with this contract:
+	- Launch remix: https://remix.ethereum.org/#optimize=true&version=soljson-v0.4.24+commit.e67f0147.js
+	- Copy and Paste the SimpleCrowdsale.sol into the remix editor
+	- Paste contract address: 0x921F25Ae2441eb5b1Bc2554F604e9539aAD923fA
+	  in the Load contract from Address and click At Address button.
+	- click invest to buy shares of my SimpleCoin tokens!
