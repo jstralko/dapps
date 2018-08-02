@@ -11,4 +11,4 @@ To interface with this contract:
 
 To run the UI piece (the SimpleCrowdsale.sol is hardcoded in the ui):
 	cd ui/ && npm install && npm start
-		- If everything success go to http://localhost:3000
+		- If successful, go to http://localhost:3000
