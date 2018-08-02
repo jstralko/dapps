@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./ReleasableSimpleCoin.sol";
 import "./Ownable.sol";
-import "./Destructible.sol"
+import "./Destructible.sol";
 
 contract SimpleCrowdsale is Pausable, Destructible {
     uint256 public startTime;
@@ -24,8 +24,8 @@ contract SimpleCrowdsale is Pausable, Destructible {
        uint256 _weiTokenPrice, uint256 _weiInvestmentObjective)
      payable public
     {
-        require(_startTime >= now);
-        require(_endTime >= _startTime);
+        //require(_startTime >= now);
+        //require(_endTime >= _startTime);
         require(_weiTokenPrice != 0);
         require(_weiInvestmentObjective != 0);
 
