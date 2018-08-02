@@ -17,7 +17,7 @@ const ContractInterface = (props) =>
     :
     <div>
       <input
-        style={{width: 280}}
+        style={{width: 300}}
         type='text'
         onChange={props.onChange}
       />
@@ -32,21 +32,24 @@ class App extends Component {
   state = { loading: false };
 
   componentDidMount() {
-    const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/TOKEN"));
+    //const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/TOKEN"));
+    //use the MetaMask Plugin if its available.
+    const web3 = new Web3(window.web3.currentProvider);
 
     //block: 3759861 - where the my SimpleCrowdsale contract is deployed
-    web3.eth.getBlock("latest", (error, result) => {
-      this.setState({latest: result});
-      console.log(jsonInterface);
+    web3.eth.getAccounts()
+      .then(accounts => {
 
-      const contract = new web3.eth.Contract(jsonInterface, '0x921f25ae2441eb5b1bc2554f604e9539aad923fa', {
-        from: '0xe55dd325e5a541329a7dcda10bca89d0119ebc76', // default from address
-        gasPrice: '3000000'
+        this.setState({account: accounts[0]});
+        console.log(`Found account: ${accounts[0]}`);
+
+        const contract = new web3.eth.Contract(jsonInterface, '0x921f25ae2441eb5b1bc2554f604e9539aad923fa', {
+          from: accounts[0], // default from address
+          gasPrice: '3000000'
+        });
+
+        this.setState({contract})
       });
-
-
-      this.setState({contract})
-    });
   }
 
   onChange = (e) => {
@@ -58,27 +61,27 @@ class App extends Component {
   }
 
   callInvestmentAmountOf = () => {
-    const { contract, value } = this.state;
+    const { contract, value, account } = this.state;
 
     this.setState({loading: true});
 
     contract.methods.investmentAmountOf(value)
       .call({
-        from: '0xe55dd325e5a541329a7dcda10bca89d0119ebc76'
+        from: account
       }, (error, result) => {
           this.onResultFromInvestmentAmountOf(result);
       });
   }
 
   render() {
-    const { latest } = this.state;
+    const { account } = this.state;
 
     return <div className="App">
       <div className="App-heading App-flex">
         <h2>Welcome to <span className="App-react">SimpleCrowdsale</span></h2>
       </div>
       <div className="App-instructions App-flex">
-      {latest == undefined ?
+      {account == undefined ?
         <div>Connecting web3 to Provider...</div>
           :
           <ContractInterface
