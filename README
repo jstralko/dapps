@@ -8,3 +8,7 @@ To interface with this contract:
 	- Paste contract address: 0x921F25Ae2441eb5b1Bc2554F604e9539aAD923fA
 	  in the Load contract from Address and click At Address button.
 	- click invest to buy shares of my SimpleCoin tokens!
+
+To run the UI piece (the SimpleCrowdsale.sol is hardcoded in the ui):
+	cd ui/ && npm install && npm start
+		- If everything success go to http://localhost:3000
