@@ -16,6 +16,7 @@ const ContractInterface = (props) =>
     <div>Retrieving Value</div>
     :
     <div>
+      <div>Using account: {props.account}</div>
       <input
         style={{width: 300}}
         type='text'
@@ -36,7 +37,6 @@ class App extends Component {
     //use the MetaMask Plugin if its available.
     const web3 = new Web3(window.web3.currentProvider);
 
-    //block: 3759861 - where the my SimpleCrowdsale contract is deployed
     web3.eth.getAccounts()
       .then(accounts => {
 
