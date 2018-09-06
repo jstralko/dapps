@@ -3,8 +3,9 @@ pragma solidity ^0.4.24;
 import "./SimpleCoin.sol";
 import "./Pausable.sol";
 import "./Destructible.sol";
+import "./ReleasableToken.sol";
 
-contract ReleasableSimpleCoin is SimpleCoin, Pausable, Destructible {
+contract ReleasableSimpleCoin is SimpleCoin, Pausable, Destructible, ReleasableToken {
     bool public released = false;
 
     modifier isReleased() {

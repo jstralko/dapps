@@ -11,6 +11,21 @@ const InvestmentAmountOf = (props) =>
       Invested Amount: {props.investmentAmountOf}
     </div>;
 
+const Invest = (props) =>
+  props.loadingInvest ?
+    <div>{'Investing your hard earned money. Please wait...'}</div>
+    :
+    <div>
+      <input
+        type='text'
+        onChange={props.onChangeInvest}
+      />
+    <span style={{marginLeft: 5, marginRight: 5}}>wei</span>
+      <button onClick={props.callInvest}>
+        Invest
+      </button>
+    </div>;
+
 const ContractInterface = (props) =>
   props.loading ?
     <div>Retrieving Value</div>
@@ -18,7 +33,7 @@ const ContractInterface = (props) =>
     <div>
       <div>Using account: {props.account}</div>
       <input
-        style={{width: 300}}
+        style={{width: 300, marginRight: 5}}
         type='text'
         onChange={props.onChange}
       />
@@ -26,11 +41,12 @@ const ContractInterface = (props) =>
         Investmented Amount
       </button>
       <InvestmentAmountOf {...props} />
+      <Invest {...props} />
     </div>;
 
 class App extends Component {
 
-  state = { loading: false };
+  state = { loading: false, loadingInvest: false };
 
   componentDidMount() {
     //const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/TOKEN"));
@@ -56,11 +72,15 @@ class App extends Component {
     this.setState({value: e.target.value});
   }
 
+  onChangeInvest = (e) => {
+    this.setState({investValue: e.target.value});
+  }
+
   onResultFromInvestmentAmountOf = (result) => {
     this.setState({investmentAmountOf: result, loading: false});
   }
 
-  callInvestmentAmountOf = () => {
+  callInvestmentAmountOf = (result) => {
     const { contract, value, account } = this.state;
 
     this.setState({loading: true});
@@ -71,6 +91,26 @@ class App extends Component {
       }, (error, result) => {
           this.onResultFromInvestmentAmountOf(result);
       });
+  }
+
+  onResultFromInvest = (result) => {
+    //console.log(JSON.stringify(result));
+    this.setState({loadingInvest: false});
+  }
+
+  callInvest = () => {
+    const { contract, investValue, account } = this.state;
+
+    this.setState({loadingInvest: true});
+
+    contract.invest({
+        from: account,
+        gasPrice: '3000000',
+        gas: 3000000,
+        value: investValue
+    }, (error, result) => {
+          this.onResultFromInvest(result);
+    });
   }
 
   render() {
@@ -87,7 +127,9 @@ class App extends Component {
           <ContractInterface
             {...this.state}
             onChange={this.onChange}
+            onChangeInvest={this.onChangeInvest}
             callInvestmentAmountOf={this.callInvestmentAmountOf}
+            callInvest={this.callInvest}
           />
       }
       </div>
