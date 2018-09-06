@@ -1,39 +1,47 @@
 pragma solidity ^0.4.24;
 
 import './Ownable.sol';
+import './ERC20.sol';
 
-contract SimpleCoin is Ownable {
-    mapping (address => uint256) public coinBalance;
-    mapping (address => mapping (address => uint256)) public allowance;
+contract SimpleCoin is Ownable, ERC20 {
+
+    string public constant name = "Gerb Token Name";
+    string public constant symbol = "GGT";
+    uint8 public constant decimals = 18;
+
+    mapping (address => uint256) internal coinBalance;//
+    mapping (address => mapping (address => uint256)) internal allowances;//
     mapping (address => bool) public frozenAccount;
-    address public owner;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed authorizer, address indexed authorized,
+        uint256 value); //
     event FrozenAccount(address target, bool frozen);
 
-    modifier onlyOwner {
-        if (msg.sender != owner) revert();
-        _;
-    }
-
-    function SimpleCoin(uint256 _initialSupply) public {
-        owner = msg.sender;
-
+    function SimpleCoin(uint256 _initialSupply)
+      Ownable() public {
         mint(owner, _initialSupply);
     }
 
-    function transfer(address _to, uint256 _amount) public {
+    function balanceOf(address _account) //
+        public view returns (uint256 balance) {
+        return coinBalance[_account];
+    }
+
+    function transfer(address _to, uint256 _amount) public returns (bool) {
         require(_to != 0x0);
         require(coinBalance[msg.sender] > _amount);
         require(coinBalance[_to] + _amount >= coinBalance[_to] );
         coinBalance[msg.sender] -= _amount;
         coinBalance[_to] += _amount;
         Transfer(msg.sender, _to, _amount);
+        return true;
     }
 
-    function authorize(address _authorizedAccount, uint256 _allowance)
+    function approve(address _authorizedAccount, uint256 _allowance)
         public returns (bool success) {
-        allowance[msg.sender][_authorizedAccount] = _allowance;
+        allowances[msg.sender][_authorizedAccount] = _allowance;
+        Approval(msg.sender, _authorizedAccount, _allowance);//
         return true;
     }
 
@@ -42,12 +50,17 @@ contract SimpleCoin is Ownable {
         require(_to != 0x0);
         require(coinBalance[_from] > _amount);
         require(coinBalance[_to] + _amount >= coinBalance[_to] );
-        require(_amount <= allowance[_from][msg.sender]);
+        require(_amount <= allowances[_from][msg.sender]);
         coinBalance[_from] -= _amount;
         coinBalance[_to] += _amount;
-        allowance[_from][msg.sender] -= _amount;
+        allowances[_from][msg.sender] -= _amount;
         Transfer(_from, _to, _amount);
         return true;
+    }
+
+    function allowance(address _authorizer, address _authorizedAccount) //
+        public view returns (uint256) {
+        return allowances[_authorizer][_authorizedAccount];
     }
 
     function mint(address _recipient, uint256  _mintedAmount)
